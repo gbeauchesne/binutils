@@ -6649,6 +6649,14 @@ process_cu_tu_index (struct dwarf_section *section, int do_display)
 	  row = byte_get (pi, 4);
 	  if (row != 0)
 	    {
+	      /* PR 17531: file: a05f6ab3.  */
+	      if (row >= nused)
+		{
+		  warn (_("Row index (%u) is larger than number of used entries (%u)\n"),
+			row, nused);
+		  return 0;
+		}
+
 	      if (!do_display)
 		memcpy (&this_set[row - 1].signature, ph, sizeof (uint64_t));
 	      prow = poffsets + (row - 1) * ncols * 4;
