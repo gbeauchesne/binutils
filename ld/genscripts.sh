@@ -228,7 +228,115 @@ case :${lib_path1}:${lib_path2}: in
   *) LIB_PATH=${lib_path1}:${lib_path2} ;;
 esac
 
+# We use the $tool_lib variable in our multiarch mangling:
+if [ "x${TOOL_LIB}" = "x" ] ; then
+  tool_lib=${exec_prefix}/${target_alias}/lib
+else
+  tool_lib=${exec_prefix}/${TOOL_LIB}/lib
+fi
+
+if [ "x${APPEND_TOOLLIBDIR}" = "xyes" ] ; then
+  LIB_PATH=${LIB_PATH}:${tool_lib}
+  # For multilib targets, search both $tool_lib dirs
+  if [ "x${LIBPATH_SUFFIX}" != "x" ] ; then
+    LIB_PATH=${LIB_PATH}:${tool_lib}${LIBPATH_SUFFIX}
+  fi
+fi
+
 LIB_SEARCH_DIRS=`echo ${LIB_PATH} | sed -e 's/:/ /g' -e 's/\([^ ][^ ]*\)/SEARCH_DIR(\\"\1\\");/g'`
+if [ -n "$DEB_TARGET_MULTIARCH" ]; then
+    temp_dirs=' '
+    for dir in `echo ${LIB_PATH} | sed -e 's/:/ /g'`; do
+	case "$dir" in
+	    *${tool_lib}*|*/${target_alias}/*)
+	        ;;
+	    */lib)
+		if [ -n "$DEB_TARGET_MULTIARCH32" ]; then
+		    case $EMULATION_NAME in
+			elf_i386|elf32*)
+			    temp_dirs="${temp_dirs}${dir}/$DEB_TARGET_MULTIARCH32 ";;
+			*)
+			    temp_dirs="${temp_dirs}${dir}/$DEB_TARGET_MULTIARCH "
+		    esac
+		elif [ -n "$DEB_TARGET_MULTIARCH64" ]; then
+		    case $EMULATION_NAME in
+			elf*_64|elf64*)
+			    temp_dirs="${temp_dirs}${dir}/$DEB_TARGET_MULTIARCH64 ";;
+			*)
+			    temp_dirs="${temp_dirs}${dir}/$DEB_TARGET_MULTIARCH "
+		    esac
+		else
+		    temp_dirs="${temp_dirs}${dir}/$DEB_TARGET_MULTIARCH "
+		fi
+		;;
+	    */lib32)
+	        if [ -n "$DEB_TARGET_MULTIARCH32" ]; then
+		    dir2=$(echo $dir | sed "s,32$,,")
+		    temp_dirs="${temp_dirs}${dir2}/$DEB_TARGET_MULTIARCH32 "
+		fi
+		;;
+	    */lib64)
+	        case "${target}" in
+		    aarch64*-*-*|powerpc64-*-*|s390x-*-*|sparc64-*-*|x86_64-*-linux-gnu|mips64-*-gnuabi64)
+			#dir=$(echo $dir | sed "s,64$,,")
+			dir2=$(echo $dir | sed "s,64$,,")
+			temp_dirs="${temp_dirs}${dir2}/$DEB_TARGET_MULTIARCH "
+			;;
+		    *)
+			if [ -n "$DEB_TARGET_MULTIARCH64" ]; then
+			    dir2=$(echo $dir | sed "s,64$,,")
+			    temp_dirs="${temp_dirs}${dir2}/$DEB_TARGET_MULTIARCH64 "
+			fi
+			;;
+		esac
+	        ;;
+	    */libx32)
+		case "${target}" in
+		    x86_64-*-linux-gnux32)
+			dir2=$(echo $dir | sed "s,x32$,,")
+			temp_dirs="${temp_dirs}${dir2}/$DEB_TARGET_MULTIARCH "
+			;;
+		    *)
+			if [ -n "$DEB_TARGET_MULTIARCHX32" ]; then
+			    dir2=$(echo $dir | sed "s,x32$,,")
+			    temp_dirs="${temp_dirs}${dir2}/$DEB_HOST_MULTIARCHX32 "
+			fi
+			;;
+		esac
+		;;
+	    */libn32)
+		case "${target}" in
+		    mips64*-*-linux-gnuabin32)
+			dir2=$(echo $dir | sed "s,n32$,,")
+			temp_dirs="${temp_dirs}${dir2}/$DEB_TARGET_MULTIARCH "
+			;;
+		    *)
+			if [ -n "$DEB_TARGET_MULTIARCHN32" ]; then
+			    dir2=$(echo $dir | sed "s,n32$,,")
+			    temp_dirs="${temp_dirs}${dir2}/$DEB_HOST_MULTIARCHN32 "
+			fi
+			;;
+		esac
+		;;
+	    */libilp32)
+	        if [ -n "$DEB_TARGET_MULTIARCH32" ]; then
+		    dir2=$(echo $dir | sed "s,ilp32$,,")
+		    temp_dirs="${temp_dirs}${dir2}/$DEB_TARGET_MULTIARCH32 "
+		fi
+		;;
+	    *)
+		;;
+	esac
+	temp_dirs="${temp_dirs}${dir} "
+    done
+    LIB_SEARCH_DIRS=
+    for dir in $temp_dirs; do
+	if echo "$LIB_SEARCH_DIRS" | fgrep -q "\"$dir\""; then
+	    continue
+	fi
+	LIB_SEARCH_DIRS="${LIB_SEARCH_DIRS}SEARCH_DIR(\"$dir\"); "
+    done
+fi
 
 # We need it for testsuite.
 set $EMULATION_LIBPATH
