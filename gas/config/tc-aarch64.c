@@ -7186,6 +7186,7 @@ static const struct aarch64_cpu_option_table aarch64_cpus[] = {
 				 AARCH64_FEATURE_CRC), "Cortex-A53"},
   {"cortex-a57", AARCH64_FEATURE(AARCH64_ARCH_V8,
 				 AARCH64_FEATURE_CRC), "Cortex-A57"},
+  {"thunderx",		AARCH64_ARCH_V8, "Cavium ThunderX"},
   /* The 'xgene-1' name is an older name for 'xgene1', which was used
      in earlier releases and is superseded by 'xgene1' in all
      tools.  */
