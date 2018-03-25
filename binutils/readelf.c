@@ -3089,7 +3089,9 @@ get_machine_flags (unsigned e_flags, unsigned e_machine)
                   strcat (buf, ", abort");
                   break;
                 default:
-                  abort ();
+		  warn (_("Unrecognised IA64 VMS Command Code: %x\n"),
+			e_flags & EF_IA_64_VMS_COMCOD);
+		  strcat (buf, ", <unknown>");
                 }
             }
 	  break;
@@ -5046,7 +5048,10 @@ get_elf_section_flags (bfd_vma sh_flags)
 	      if (p != buff + field_size + 4)
 		{
 		  if (size < (10 + 2))
-		    abort ();
+		    {
+		      warn (_("Internal error: not enough buffer room for section flag info"));
+		      return _("<unknown>");
+		    }
 		  size -= 2;
 		  *p++ = ',';
 		  *p++ = ' ';
@@ -5110,7 +5115,10 @@ get_elf_section_flags (bfd_vma sh_flags)
 	  if (p != buff + field_size + 4)
 	    {
 	      if (size < (2 + 1))
-		abort ();
+		{
+		  warn (_("Internal error: not enough buffer room for section flag info"));
+		  return _("<unknown>");
+		}
 	      size -= 2;
 	      *p++ = ',';
 	      *p++ = ' ';
@@ -5125,7 +5133,10 @@ get_elf_section_flags (bfd_vma sh_flags)
 	  if (p != buff + field_size + 4)
 	    {
 	      if (size < (2 + 1))
-		abort ();
+		{
+		  warn (_("Internal error: not enough buffer room for section flag info"));
+		  return _("<unknown>");
+		}
 	      size -= 2;
 	      *p++ = ',';
 	      *p++ = ' ';
@@ -5140,7 +5151,10 @@ get_elf_section_flags (bfd_vma sh_flags)
 	  if (p != buff + field_size + 4)
 	    {
 	      if (size < (2 + 1))
-		abort ();
+		{
+		  warn (_("Internal error: not enough buffer room for section flag info"));
+		  return _("<unknown>");
+		}
 	      size -= 2;
 	      *p++ = ',';
 	      *p++ = ' ';
@@ -9646,7 +9660,9 @@ get_symbol_visibility (unsigned int visibility)
     case STV_INTERNAL:	return "INTERNAL";
     case STV_HIDDEN:	return "HIDDEN";
     case STV_PROTECTED: return "PROTECTED";
-    default: abort ();
+    default:
+      error (_("Unrecognized visibility value: %u"), visibility);
+      return _("<unknown>");
     }
 }
 
@@ -9701,7 +9717,10 @@ get_ia64_symbol_other (unsigned int other)
               strcat (res, " RSV");
               break;
             default:
-              abort ();
+	      warn (_("Unrecognized IA64 VMS ST Function type: %d\n"),
+		    VMS_ST_FUNC_TYPE (other));
+	      strcat (res, " <unknown>");
+	      break;
             }
           break;
         default:
@@ -9722,7 +9741,10 @@ get_ia64_symbol_other (unsigned int other)
           strcat (res, " LNK");
           break;
         default:
-          abort ();
+	  warn (_("Unrecognized IA64 VMS ST Linkage: %d\n"),
+		VMS_ST_LINKAGE (other));
+	  strcat (res, " <unknown>");
+	  break;
         }
 
       if (res[0] != 0)
@@ -10885,9 +10907,16 @@ is_32bit_abs_reloc (unsigned int reloc_type)
     case EM_XTENSA:
       return reloc_type == 1; /* R_XTENSA_32.  */
     default:
-      error (_("Missing knowledge of 32-bit reloc types used in DWARF sections of machine number %d\n"),
-	     elf_header.e_machine);
-      abort ();
+      {
+	static unsigned int prev_warn = 0;
+
+	/* Avoid repeating the same warning multiple times.  */
+	if (prev_warn != elf_header.e_machine)
+	  error (_("Missing knowledge of 32-bit reloc types used in DWARF sections of machine number %d\n"),
+		 elf_header.e_machine);
+	prev_warn = elf_header.e_machine;
+	return FALSE;
+      }
     }
 }
 
@@ -11246,8 +11275,11 @@ apply_relocations (void * file,
 	    reloc_size = 2;
 	  else
 	    {
-	      warn (_("unable to apply unsupported reloc type %d to section %s\n"),
-		    reloc_type, printable_section_name (section));
+	      static unsigned int prev_reloc = 0;
+	      if (reloc_type != prev_reloc)
+		warn (_("unable to apply unsupported reloc type %d to section %s\n"),
+		      reloc_type, printable_section_name (section));
+	      prev_reloc = reloc_type;
 	      continue;
 	    }
 
@@ -12153,7 +12185,8 @@ display_arm_attribute (unsigned char * p,
 	      break;
 
 	    default:
-	      abort ();
+	      printf (_("<unknown: %d>\n"), tag);
+	      break;
 	    }
 	  return p;
 
