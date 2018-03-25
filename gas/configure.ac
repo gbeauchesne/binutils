@@ -287,6 +287,9 @@ changequote([,])dnl
 	esac
 	# Decide which ABI to target by default.
 	case ${target} in
+	  mips64*-linux-gnuabi64)
+	    mips_default_abi=N64_ABI
+	    ;;
 	  mips64*-linux* | mips-sgi-irix6* | mips64*-freebsd* | mips64*-kfreebsd*-gnu)
 	    mips_default_abi=N32_ABI
 	    ;;
