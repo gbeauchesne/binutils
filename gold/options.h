@@ -1323,6 +1323,9 @@ class General_options
   DEFINE_bool_alias(textoff, text, options::DASH_Z, '\0',
 		    N_("Permit relocations in read-only segments (default)"),
 		    NULL, true);
+  DEFINE_bool(buildd, options::DASH_Z, '\0', false,
+	      N_("Dummy z option"),
+	      NULL);
 
  public:
   typedef options::Dir_list Dir_list;
