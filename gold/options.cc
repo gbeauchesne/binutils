@@ -1227,8 +1227,15 @@ General_options::finalize()
 	       || this->user_set_sysroot()
 	       || *TARGET_SYSTEM_ROOT != '\0')
 	{
+#ifdef MULTIARCH_DIRNAME
+	  this->add_to_library_path_with_sysroot("/lib/" MULTIARCH_DIRNAME);
+	  this->add_to_library_path_with_sysroot("/usr/lib/" MULTIARCH_DIRNAME);
+#endif
 	  this->add_to_library_path_with_sysroot("/lib");
 	  this->add_to_library_path_with_sysroot("/usr/lib");
+#ifdef APPEND_TOOLLIBDIR
+	  this->add_to_library_path_with_sysroot(TOOLLIBDIR);
+#endif
 	}
       else
 	this->add_to_library_path_with_sysroot(TOOLLIBDIR);
