@@ -1359,6 +1359,9 @@ class General_options
 		    options::TWO_DASHES, '\0',
 		    N_("Report unresolved symbols as errors"),
 		    NULL, true);
+  DEFINE_bool(buildd, options::DASH_Z, '\0', false,
+	      N_("Dummy z option"),
+	      NULL);
 
   DEFINE_bool(wchar_size_warning, options::TWO_DASHES, '\0', true, NULL,
 	      N_("(ARM only) Do not warn about objects with incompatible "
