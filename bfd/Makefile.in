@@ -388,7 +388,7 @@ libbfd_la_LDFLAGS = $(am__append_1) -release `cat libtool-soversion` \
 # case both are empty.
 ZLIB = @zlibdir@ -lz
 ZLIBINC = @zlibinc@
-AM_CFLAGS = $(WARN_CFLAGS) $(ZLIBINC)
+AM_CFLAGS = $(WARN_CFLAGS) $(ZLIBINC) -fPIC
 AM_CPPFLAGS = -DBINDIR='"$(bindir)"'
 @PLUGINS_TRUE@LIBDL = @lt_cv_dlopen_libs@
 
