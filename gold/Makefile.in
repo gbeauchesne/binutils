@@ -475,7 +475,7 @@ top_srcdir = @top_srcdir@
 zlibdir = @zlibdir@
 zlibinc = @zlibinc@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = po testsuite
+SUBDIRS = po
 tooldir = $(exec_prefix)/$(target_alias)
 ACLOCAL_AMFLAGS = -I ../bfd -I ../config
 
