@@ -3159,14 +3159,7 @@ Symbol_table::sized_write_globals(const Stringpool* sympool,
 	  break;
 
 	case Symbol::IN_OUTPUT_SEGMENT:
-	  {
-	    Output_segment* oseg = sym->output_segment();
-	    Output_section* osect = oseg->first_section();
-	    if (osect == NULL)
-	      shndx = elfcpp::SHN_ABS;
-	    else
-	      shndx = osect->out_shndx();
-	  }
+	  shndx = elfcpp::SHN_ABS;
 	  break;
 
 	case Symbol::IS_CONSTANT:

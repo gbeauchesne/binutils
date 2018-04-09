@@ -4801,7 +4801,7 @@ Output_segment::first_section() const
 	    return (*p)->output_section();
 	}
     }
-  return NULL;
+  gold_unreachable();
 }
 
 // Return the number of Output_sections in an Output_segment.
