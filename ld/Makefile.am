@@ -145,7 +145,7 @@ AM_CPPFLAGS = -I. -I$(srcdir) -I../bfd -I$(BFDDIR) -I$(INCDIR) @zlibinc@ \
 BFDLIB = ../bfd/libbfd.la
 LIBIBERTY = ../libiberty/libiberty.a
 if ENABLE_LIBCTF
-LIBCTF = ../libctf/libctf.la
+LIBCTF = ../libctf/libctf@CTF_SOVER_EXT@.la
 else
 LIBCTF =
 endif

@@ -560,6 +560,9 @@ EMULATION_VECTOR=$targ_emul_vector
 AC_SUBST(EMULATION)
 AC_SUBST(EMULATION_VECTOR)
 
+CTF_SOVER_EXT=$CTF_SOVER_EXT
+AC_SUBST(CTF_SOVER_EXT)
+
 # Required for html and install-html
 AC_SUBST(datarootdir)
 AC_SUBST(docdir)

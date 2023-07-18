@@ -676,6 +676,9 @@ sed -e '/^SRC-POTFILES =/r po/SRC-POTFILES' \
     -e "s,@GMOFILES@,$GMOFILES," \
     po/Makefile.in > po/Makefile]],[[]])
 
+CTF_SOVER_EXT=$CTF_SOVER_EXT
+AC_SUBST(CTF_SOVER_EXT)
+
 dnl Required by html, pdf, install-pdf and install-html
 AC_SUBST(datarootdir)
 AC_SUBST(docdir)
