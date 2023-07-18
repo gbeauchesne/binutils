@@ -1016,7 +1016,8 @@ class General_options
 
   // k
 
-  DEFINE_bool(keep_files_mapped, options::TWO_DASHES, '\0', true,
+  DEFINE_bool(keep_files_mapped, options::TWO_DASHES, '\0',
+	      sizeof(void*) >= 8,
 	      N_("Keep files mapped across passes"),
 	      N_("Release mapped files after each pass"));
 
