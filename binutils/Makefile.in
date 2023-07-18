@@ -246,7 +246,8 @@ am_objdump_OBJECTS = objdump.$(OBJEXT) dwarf.$(OBJEXT) prdbg.$(OBJEXT) \
 	demanguse.$(OBJEXT) $(am__objects_3) $(am__objects_1) \
 	$(am__objects_2)
 objdump_OBJECTS = $(am_objdump_OBJECTS)
-@ENABLE_LIBCTF_TRUE@am__DEPENDENCIES_2 = ../libctf/libctf.la
+@ENABLE_LIBCTF_TRUE@am__DEPENDENCIES_2 =  \
+@ENABLE_LIBCTF_TRUE@	../libctf/libctf@CTF_SOVER_EXT@.la
 am_ranlib_OBJECTS = ar.$(OBJEXT) is-ranlib.$(OBJEXT) arparse.$(OBJEXT) \
 	arlex.$(OBJEXT) arsup.$(OBJEXT) rename.$(OBJEXT) \
 	binemul.$(OBJEXT) emul_$(EMULATION).$(OBJEXT) $(am__objects_1)
@@ -255,7 +256,8 @@ am_readelf_OBJECTS = readelf.$(OBJEXT) version.$(OBJEXT) \
 	unwind-ia64.$(OBJEXT) dwarf.$(OBJEXT) demanguse.$(OBJEXT) \
 	$(am__objects_2)
 readelf_OBJECTS = $(am_readelf_OBJECTS)
-@ENABLE_LIBCTF_TRUE@am__DEPENDENCIES_3 = ../libctf/libctf-nobfd.la
+@ENABLE_LIBCTF_TRUE@am__DEPENDENCIES_3 =  \
+@ENABLE_LIBCTF_TRUE@	../libctf/libctf-nobfd@CTF_SOVER_EXT@.la
 am_size_OBJECTS = size.$(OBJEXT) $(am__objects_1)
 size_OBJECTS = $(am_size_OBJECTS)
 size_LDADD = $(LDADD)
@@ -486,6 +488,7 @@ CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CTF_SOVER_EXT = @CTF_SOVER_EXT@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
 DEBUGINFOD_CFLAGS = @DEBUGINFOD_CFLAGS@
@@ -738,9 +741,9 @@ ELFLIBS = elfcomm.c
 BFDLIB = ../bfd/libbfd.la
 OPCODES = ../opcodes/libopcodes.la
 @ENABLE_LIBCTF_FALSE@LIBCTF = 
-@ENABLE_LIBCTF_TRUE@LIBCTF = ../libctf/libctf.la
+@ENABLE_LIBCTF_TRUE@LIBCTF = ../libctf/libctf@CTF_SOVER_EXT@.la
 @ENABLE_LIBCTF_FALSE@LIBCTF_NOBFD = 
-@ENABLE_LIBCTF_TRUE@LIBCTF_NOBFD = ../libctf/libctf-nobfd.la
+@ENABLE_LIBCTF_TRUE@LIBCTF_NOBFD = ../libctf/libctf-nobfd@CTF_SOVER_EXT@.la
 LIBSFRAME = ../libsframe/libsframe.la
 LIBIBERTY = ../libiberty/libiberty.a
 POTFILES = $(CFILES) $(DEBUG_SRCS) $(HFILES)

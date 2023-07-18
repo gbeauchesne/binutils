@@ -634,6 +634,7 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+CTF_SOVER_EXT
 EMULATION_VECTOR
 EMULATION
 OBJDUMP_PRIVATE_OFILES
@@ -10817,7 +10818,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 10820 "configure"
+#line 10821 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10923,7 +10924,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 10926 "configure"
+#line 10927 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14774,6 +14775,9 @@ EMULATION=$targ_emul
 EMULATION_VECTOR=$targ_emul_vector
 
 
+
+
+CTF_SOVER_EXT=$CTF_SOVER_EXT
 
 
 # Required for html and install-html

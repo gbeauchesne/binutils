@@ -39,23 +39,23 @@ AM_CPPFLAGS = -D_GNU_SOURCE -I$(srcdir) -I$(srcdir)/../include -I$(srcdir)/../bf
 AM_CFLAGS = -std=gnu99 @ac_libctf_warn_cflags@ @warn@ @c_warn@ @WARN_PEDANTIC@ @WERROR@ $(ZLIBINC)
 
 if INSTALL_LIBBFD
-lib_LTLIBRARIES = libctf.la libctf-nobfd.la
+lib_LTLIBRARIES = libctf@CTF_SOVER_EXT@.la libctf-nobfd@CTF_SOVER_EXT@.la
 include_HEADERS = $(INCDIR)/ctf.h $(INCDIR)/ctf-api.h
 else
 include_HEADERS =
-noinst_LTLIBRARIES = libctf.la libctf-nobfd.la
+noinst_LTLIBRARIES = libctf@CTF_SOVER_EXT@.la libctf-nobfd@CTF_SOVER_EXT@.la
 endif
 
 libctf_nobfd_la_LIBADD = @CTF_LIBADD@ $(ZLIB)
 libctf_ldflags_nover = -version-info 0:0:0 @SHARED_LDFLAGS@
 libctf_nobfd_la_LDFLAGS = $(libctf_ldflags_nover) @VERSION_FLAGS_NOBFD@
 libctf_nobfd_la_CPPFLAGS = $(AM_CPPFLAGS) -DNOBFD=1
-libctf_nobfd_la_SOURCES = ctf-archive.c ctf-dump.c ctf-create.c ctf-decl.c ctf-error.c \
+COMMON_LIB_SOURCES = ctf-archive.c ctf-dump.c ctf-create.c ctf-decl.c ctf-error.c \
 			  ctf-hash.c ctf-labels.c ctf-dedup.c ctf-link.c ctf-lookup.c \
 			  ctf-open.c ctf-serialize.c ctf-sha1.c ctf-string.c ctf-subr.c \
 			  ctf-types.c ctf-util.c
 if NEED_CTF_QSORT_R
-libctf_nobfd_la_SOURCES += ctf-qsort_r.c
+COMMON_LIB_SOURCES += ctf-qsort_r.c
 endif
 
 # @CTF_LIBADD@ appears here twice: once, to force libiberty to get searched before
@@ -66,6 +66,16 @@ libctf_la_LIBADD =  @CTF_LIBADD@ ../bfd/libbfd.la $(libctf_nobfd_la_LIBADD)
 libctf_la_CPPFLAGS = $(AM_CPPFLAGS) -DNOBFD=0
 libctf_la_LDFLAGS = $(libctf_ldflags_nover) @VERSION_FLAGS@
 libctf_la_SOURCES = $(libctf_nobfd_la_SOURCES) ctf-open-bfd.c
+
+libctf_nobfd@CTF_SOVER_EXT@_la_LIBADD = @CTF_LIBADD@ $(LIBINTL) $(ZLIB)
+libctf_nobfd@CTF_SOVER_EXT@_la_LDFLAGS = -version-info 0:0:0 @SHARED_LDFLAGS@ @VERSION_FLAGS@
+libctf_nobfd@CTF_SOVER_EXT@_la_CPPFLAGS = $(AM_CPPFLAGS) -DNOBFD=1
+libctf_nobfd@CTF_SOVER_EXT@_la_SOURCES = $(COMMON_LIB_SOURCES)
+
+libctf@CTF_SOVER_EXT@_la_LIBADD = @CTF_LIBADD@ ../bfd/libbfd.la $(libctf_nobfd_la_LIBADD)
+libctf@CTF_SOVER_EXT@_la_CPPFLAGS = $(AM_CPPFLAGS) -DNOBFD=0
+libctf@CTF_SOVER_EXT@_la_LDFLAGS = $(libctf_nobfd_la_LDFLAGS)
+libctf@CTF_SOVER_EXT@_la_SOURCES = $(COMMON_LIB_SOURCES) ctf-open-bfd.c
 
 # Setup the testing framework, if you have one
 EXPECT = expect
