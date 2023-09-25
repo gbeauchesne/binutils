@@ -40,6 +40,7 @@ TEXI2DVI = texi2dvi -I "$(srcdir)/%D%" -I %D% -I "$(srcdir)/../libiberty" \
 		   -I "$(srcdir)/../bfd/doc" -I ../bfd/doc
 
 %D%/asconfig.texi: %D%/$(CONFIG).texi %D%/$(am__dirstamp)
+	$(MKDIR_P) $(@D)
 	$(AM_V_at)rm -f %D%/asconfig.texi
 	$(AM_V_GEN)cp $(srcdir)/%D%/$(CONFIG).texi %D%/asconfig.texi
 	$(AM_V_at)chmod u+w %D%/asconfig.texi
