@@ -6039,7 +6039,12 @@ optimize_imm (void)
     }
   else if ((flag_code == CODE_16BIT) ^ (i.prefix[DATA_PREFIX] != 0))
     guess_suffix = WORD_MNEM_SUFFIX;
-  else if (flag_code != CODE_64BIT || !(i.prefix[REX_PREFIX] & REX_W))
+  else if (flag_code != CODE_64BIT
+	   || (!(i.prefix[REX_PREFIX] & REX_W)
+	       /* A more generic (but also more involved) way of dealing
+		  with the special case(s) would be to go look for
+		  DefaultSize attributes on any of the templates.  */
+	       && current_templates->start->mnem_off != MN_push))
     guess_suffix = LONG_MNEM_SUFFIX;
 
   for (op = i.operands; --op >= 0;)
@@ -10670,6 +10675,29 @@ s_insn (int dummy ATTRIBUTE_UNUSED)
 
   if (line > end && i.vec_encoding == vex_encoding_default)
     i.vec_encoding = evex ? vex_encoding_evex : vex_encoding_vex;
+
+  if (i.vec_encoding != vex_encoding_default)
+    {
+      /* Only address size and segment override prefixes are permitted with
+         VEX/XOP/EVEX encodings.  */
+      const unsigned char *p = i.prefix;
+
+      for (j = 0; j < ARRAY_SIZE (i.prefix); ++j, ++p)
+	{
+	  if (!*p)
+	    continue;
+
+	  switch (j)
+	    {
+	    case SEG_PREFIX:
+	    case ADDR_PREFIX:
+	      break;
+	    default:
+		  as_bad (_("illegal prefix used with VEX/XOP/EVEX"));
+		  goto bad;
+	    }
+	}
+    }
 
   if (line > end && *line == '.')
     {
