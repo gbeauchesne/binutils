@@ -19,7 +19,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = po testsuite
+SUBDIRS = po
 
 tooldir = $(exec_prefix)/$(target_alias)
 
