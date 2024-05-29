@@ -583,6 +583,7 @@ MKDIR_P = @MKDIR_P@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
+MULTIARCH_DIRNAME = @MULTIARCH_DIRNAME@
 NM = @NM@
 NO_WERROR = @NO_WERROR@
 OBJEXT = @OBJEXT@
@@ -698,6 +699,7 @@ AM_CPPFLAGS = \
 	-I$(srcdir) -I$(srcdir)/../include -I$(srcdir)/../elfcpp \
 	-DLOCALEDIR="\"$(datadir)/locale\"" \
 	-DBINDIR="\"$(bindir)\"" -DTOOLBINDIR="\"$(tooldir)/bin\"" \
+	@MULTIARCH_DIRNAME@ $(if $(APPEND_TOOLLIBDIR),-DAPPEND_TOOLLIBDIR) \
 	-DTOOLLIBDIR="\"$(tooldir)/lib\"" @INCINTL@
 
 LIBIBERTY = ../libiberty/libiberty.a
