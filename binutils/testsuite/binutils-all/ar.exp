@@ -555,6 +555,12 @@ proc replacing_non_deterministic_member { } {
 	return
     }
 
+    set source_date_epoch_set [info exists ::env(SOURCE_DATE_EPOCH)]
+    if $source_date_epoch_set {
+	set source_date_epoch ::env(SOURCE_DATE_EPOCH)
+	unsetenv SOURCE_DATE_EPOCH
+    }
+
     set archive tmpdir/artest.a
     set older_objfile tmpdir/bintest.${obj}
     set newer_objfile tmpdir/ar/bintest.${obj}
@@ -568,6 +574,9 @@ proc replacing_non_deterministic_member { } {
     set got [binutils_run $AR "rcU $archive ${newer_objfile}"]
     if ![string match "" $got] {
 	fail "$testname: (could not build archive)"
+	if $source_date_epoch_set {
+	    setenv SOURCE_DATE_EPOCH "$source_date_epoch"
+	}
 	return
     }
 
@@ -576,6 +585,9 @@ proc replacing_non_deterministic_member { } {
     set got [binutils_run $AR "ruU $archive $older_objfile"]
     if ![string match "" $got] {
 	fail "$testname: (failed to replace file)"
+	if $source_date_epoch_set {
+	    setenv SOURCE_DATE_EPOCH "$source_date_epoch"
+	}
 	return
     }
 
@@ -584,10 +596,16 @@ proc replacing_non_deterministic_member { } {
     set got [binutils_run $AR "tvO $archive"]
     if ![string match "\[rw-\]* */* *${newer_length} *bintest.${obj} 0x*" $got] {
 	fail "$testname (wrong size, expected: $newer_length)"
+	if $source_date_epoch_set {
+	    setenv SOURCE_DATE_EPOCH "$source_date_epoch"
+	}
 	return
     }
 
     pass $testname
+    if $source_date_epoch_set {
+	setenv SOURCE_DATE_EPOCH "$source_date_epoch"
+    }
 }
 
 # Test replacing a member of deterministic archive created by using SOURCE_DATE_EPOCH.
