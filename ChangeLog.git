@@ -1,3 +1,290 @@
+2024-08-17  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-16  Vladimir Mezentsev  <vladimir.mezentsev@oracle.com>
+
+	gprofng: fix typo in src/collctrl.cc
+	gprofng/ChangeLog
+	2024-08-13  Vladimir Mezentsev  <vladimir.mezentsev@oracle.com>
+
+		* src/collctrl.cc (read_cpuinfo): Fix typo.
+
+2024-08-16  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-16  H.J. Lu  <hjl.tools@gmail.com>
+
+	lto: Don't include unused LTO archive members in output
+	When plugin_object_p is called by elf_link_is_defined_archive_symbol to
+	check if a symbol in archive is a real definition, set archive member
+	plugin_format to bfd_plugin_yes_unused to avoid including the unused LTO
+	archive members in linker output.  When plugin_object_p is called as
+	known used, call plugin claim_file if plugin_format is bfd_plugin_unknown
+	or bfd_plugin_yes_unused.
+
+	To get the proper support for archives with LTO common symbols with GCC,
+	the GCC fix for
+
+	https://gcc.gnu.org/bugzilla/show_bug.cgi?id=116361
+
+	is needed.
+
+	bfd/
+
+		PR ld/32083
+		* archures.c (bfd_arch_get_compatible): Treat bfd_plugin_yes_unused
+		the same as bfd_plugin_yes.
+		* elflink.c (elf_link_is_defined_archive_symbol): Likewise.
+		* bfd.c (bfd_plugin_format): Add bfd_plugin_yes_unused.
+		* plugin.c (try_claim): Try claim_file_v2 first.
+		* bfd-in2.h: Regenerated.
+
+	ld/
+
+		PR ld/32083
+		* plugin.c (plugin_call_claim_file): Add an argument to return
+		if LDPT_REGISTER_CLAIM_FILE_HOOK_V2 is used.
+		(plugin_object_p): When KNOWN_USED is false, we call plugin
+		claim_file if plugin_format is bfd_plugin_unknown and set
+		plugin_format to bfd_plugin_yes_unused on LTO object.  When
+		KNOWN_USED is true, we call plugin claim_file if plugin_format
+		is bfd_plugin_unknown or bfd_plugin_yes_unused.
+
+	(cherry picked from commit a6f8fe0a9e9cbe871652e46ba7c22d5e9fb86208)
+
+2024-08-15  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-14  Jan Beulich  <jbeulich@suse.com>
+
+	gas: correct .irpc handling with empty string
+	Following 69cab370cf66 ("gas: adjust handling of quotes for .irpc") the
+	closing quote was mistakenly treated as the first quoted character.
+
+2024-08-14  Jan Beulich  <jbeulich@suse.com>
+
+	x86: correct .insn with opcode extension and VEX/XOP/EVEX encoding
+	When VexVVVV handling was re-worked, .insn broke: When an opcode
+	extension is in use, VexVVVV_DST needs using now, as ModR/M.reg is
+	already occupied, matching what c8866e3ec5e2 ("x86: Drop using
+	extension_opcode to encode vvvv register") did.
+
+	While adding (bad) POP2 forms, also slightly adjust existing ones:
+	No need to use XMM registers, and no need to specify %r8 when really
+	%rax is meant twice (EVEX.vvvv not really being the culprit there, or
+	else EVEX.V' would also have needed mentioning).
+
+2024-08-14  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-13  H.J. Lu  <hjl.tools@gmail.com>
+
+	ld: Add PR ld/32067 tests
+	Add PR ld/32067 tests with the compiler driver since the -plugin option
+	is needed to trigger this --oformat binary bug.
+
+		PR ld/32067
+		* testsuite/ld-i386/i386.exp: Run PR ld/32067 test.
+		* testsuite/ld-x86-64/x86-64.exp: Likewise.
+		* testsuite/ld-i386/start.s: Add .note.GNU-stack section.
+		* testsuite/ld-x86-64/pr32067.s: New file.
+
+	(cherry picked from commit 602f5cf7e3a82229d75998a5f6eb13753f828bb3)
+
+2024-08-13  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-12  Alan Modra  <amodra@gmail.com>
+
+	PR32067, ld -Wl,--oformat,binary crash in _bfd_elf_link_keep_memory
+	The direct fix for this segfault is to test for a non-NULL bed in
+	_bfd_elf_link_keep_memory, but also there isn't much point in running
+	code for LTO if the output is binary.
+
+		PR 32067
+		* elflink.c (_bfd_elf_link_keep_memory): Test for non-NULL bed.
+		(elf_link_add_object_symbols): Don't run the loop setting
+		non_ir_ref_regular if the output hash table is not ELF.
+
+	(cherry picked from commit ec8f5671b4e70806fe3053636426a8d179dfef55)
+
+2024-08-12  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-11  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-10  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-09  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-08  Richard Henderson  <richard.henderson@linaro.org>
+
+	gas: sparc: Fix faligndatai assembly and disassembly
+	The first operand is a general register, not an fp register;
+	the third operand is encoded into RS2, not RS3;
+	the second operand must match the destination operand.
+
+2024-08-08  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-07  Xiao Zeng  <zengxiao@eswincomputing.com>
+
+	RISC-V: Add support for Zcmop extension
+	This implements the Zcmop (Compressed Zimop) extension, as of version 1.0.
+
+	View detailed information in:
+	<https://github.com/riscv/riscv-isa-manual/blob/main/src/zimop.adoc>
+
+	The Zcmop extension requires the Zca extension.
+
+	bfd/ChangeLog:
+
+		* elfxx-riscv.c (riscv_multi_subset_supports): Handle Zcmop.
+		(riscv_multi_subset_supports_ext): Ditto.
+
+	gas/ChangeLog:
+
+		* NEWS: Updated.
+		* testsuite/gas/riscv/march-help.l: Ditto.
+		* testsuite/gas/riscv/zcmop.d: New test.
+		* testsuite/gas/riscv/zcmop.s: New test.
+
+	include/ChangeLog:
+
+		* opcode/riscv-opc.h (DECLARE_INSN): New declarations for Zcmop.
+		(MATCH_C_MOP_1, MATCH_C_MOP_3, MATCH_C_MOP_5, MATCH_C_MOP_7,
+		MATCH_C_MOP_9, MATCH_C_MOP_11, MATCH_C_MOP_13, MATCH_C_MOP_15): Define.
+		(MASK_C_MOP_1, MASK_C_MOP_3, MASK_C_MOP_5, MASK_C_MOP_7,
+		MASK_C_MOP_9, MASK_C_MOP_11, MASK_C_MOP_13, MASK_C_MOP_15): Ditto.
+		* opcode/riscv.h (enum riscv_insn_class): Add INSN_CLASS_ZCMOP.
+
+	opcodes/ChangeLog:
+
+		* riscv-opc.c: Add Zcmop instructions.
+
+2024-08-07  Xiao Zeng  <zengxiao@eswincomputing.com>
+
+	RISC-V: Add support for Zimop extension
+	This implements the Zimop (May-Be-Operations) extension, as of version 1.0.
+
+	View detailed information in:
+	<https://github.com/riscv/riscv-isa-manual/blob/main/src/zimop.adoc>
+
+	bfd/ChangeLog:
+
+		* elfxx-riscv.c (riscv_multi_subset_supports): Handle Zimop
+		(riscv_multi_subset_supports_ext): Ditto.
+
+	gas/ChangeLog:
+
+		* NEWS: Updated.
+		* testsuite/gas/riscv/march-help.l: Ditto.
+		* testsuite/gas/riscv/zimop.d: New test.
+		* testsuite/gas/riscv/zimop.s: New test.
+
+	include/ChangeLog:
+
+		* opcode/riscv-opc.h (DECLARE_INSN): New declarations for Zimop.
+		(MATCH_MOP_R_0, MATCH_MOP_R_1, MATCH_MOP_R_2, MATCH_MOP_R_3,
+		MATCH_MOP_R_4, MATCH_MOP_R_5, MATCH_MOP_R_6, MATCH_MOP_R_7,
+		MATCH_MOP_R_8, MATCH_MOP_R_9, MATCH_MOP_R_10, MATCH_MOP_R_11,
+		MATCH_MOP_R_12, MATCH_MOP_R_13, MATCH_MOP_R_14, MATCH_MOP_R_15,
+		MATCH_MOP_R_16, MATCH_MOP_R_17, MATCH_MOP_R_18, MATCH_MOP_R_19,
+		MATCH_MOP_R_20, MATCH_MOP_R_21, MATCH_MOP_R_22, MATCH_MOP_R_23,
+		MATCH_MOP_R_24, MATCH_MOP_R_25, MATCH_MOP_R_26, MATCH_MOP_R_27,
+		MATCH_MOP_R_28, MATCH_MOP_R_29, MATCH_MOP_R_30, MATCH_MOP_R_31,
+		MATCH_MOP_RR_0, MATCH_MOP_RR_1, MATCH_MOP_RR_2, MATCH_MOP_RR_3,
+		MATCH_MOP_RR_4, MATCH_MOP_RR_5, MATCH_MOP_RR_6, MATCH_MOP_RR_7): Define.
+		(MASK_MOP_R_0, MASK_MOP_R_1, MASK_MOP_R_2, MASK_MOP_R_3, MASK_MOP_R_4,
+		MASK_MOP_R_5, MASK_MOP_R_6, MASK_MOP_R_7, MASK_MOP_R_8, MASK_MOP_R_9,
+		MASK_MOP_R_10, MASK_MOP_R_11, MASK_MOP_R_12, MASK_MOP_R_13,
+		MASK_MOP_R_14, MASK_MOP_R_15, MASK_MOP_R_16, MASK_MOP_R_17,
+		MASK_MOP_R_18, MASK_MOP_R_19, MASK_MOP_R_20, MASK_MOP_R_21,
+		MASK_MOP_R_22, MASK_MOP_R_23, MASK_MOP_R_24, MASK_MOP_R_25,
+		MASK_MOP_R_26, MASK_MOP_R_27, MASK_MOP_R_28, MASK_MOP_R_29,
+		MASK_MOP_R_30, MASK_MOP_R_31, MASK_MOP_RR_0, MASK_MOP_RR_1,
+		MASK_MOP_RR_2, MASK_MOP_RR_3, MASK_MOP_RR_4, MASK_MOP_RR_5,
+		MASK_MOP_RR_6, MASK_MOP_RR_7): Ditto.
+		* opcode/riscv.h (enum riscv_insn_class): Add INSN_CLASS_ZIMOP.
+
+	opcodes/ChangeLog:
+
+		* riscv-opc.c: Add Zimop instructions.
+
+2024-08-07  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-06  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-05  Xi Ruoyao  <xry111@xry111.site>
+
+	LoongArch: Fix DT_RELR and relaxation interaction
+
+2024-08-05  H.J. Lu  <hjl.tools@gmail.com>
+
+	LTO: Restore the wrapper symbol check for standard function
+	Call unwrap_hash_lookup to restore the wrapper symbol check for standard
+	function since reference to standard function may not show up in LTO
+	symbol table:
+
+	[hjl@gnu-tgl-3 pr31956-3]$ nm foo.o
+	00000000 T main
+	         U __real_malloc
+	00000000 T __wrap_malloc
+	[hjl@gnu-tgl-3 pr31956-3]$  lto-dump -list foo.o
+	Type   Visibility  Size  Name
+	function  default     0  malloc
+	function  default     0  __real_malloc
+	function  default     3  main
+	function  default     5  __wrap_malloc
+	[hjl@gnu-tgl-3 pr31956-3]$ make
+	gcc -O2 -flto -Wall   -c -o foo.o foo.c
+	gcc -Wl,--wrap=malloc -O2 -flto -Wall -o x foo.o
+	/usr/local/bin/ld: /tmp/ccsPW0a9.ltrans0.ltrans.o: in function `main':
+	<artificial>:(.text.startup+0xa): undefined reference to `__wrap_malloc'
+	collect2: error: ld returned 1 exit status
+	make: *** [Makefile:22: x] Error 1
+	[hjl@gnu-tgl-3 pr31956-3]$
+
+	Also add a test to verify that the unused wrapper is removed.
+
+		PR ld/31956
+		* plugin.c (get_symbols): Restore the wrapper symbol check for
+		standard function.
+		* testsuite/ld-plugin/lto.exp: Run the malloc test and the
+		unused test.
+		* testsuite/ld-plugin/pr31956c.c: New file.
+		* testsuite/ld-plugin/pr31956d.c: New file.
+		* testsuite/ld-plugin/pr31956d.d: New file.
+
+	(cherry picked from commit 3221c470f0765886a49a1a3d2ec602e4104a377b)
+
+2024-08-05  GDB Administrator  <gdbadmin@sourceware.org>
+
+	Automatic date update in version.in
+
+2024-08-04  Nick Clifton  <nickc@redhat.com>
+
+	Re-enable development on 2.43 branch
+
+	this-is-the-2.43-release
+
 2024-08-04  GDB Administrator  <gdbadmin@sourceware.org>
 
 	Automatic date update in version.in
@@ -213978,11 +214265,3 @@
 
 		* dwarf2/read.c (lnp_state_machine::record_line): Use 'true'.
 		(dwarf_decode_lines): Remove '=='.
-
-2021-07-03  Nick Clifton  <nickc@redhat.com>
-
-	More minor updates to the how-to-make-a-release documentation
-
-	Update version number and regenerate files
-
-	Add markers for 2.37 branch
